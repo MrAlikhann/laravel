@@ -18,6 +18,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::middleware(['auth', 'moderator'])->prefix('moderator')->name('moderator.')->group(function () {
+    Route::resource('objects', \App\Http\Controllers\ModeratorObjectController::class);
+});
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
@@ -28,8 +32,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::middleware(['auth', 'moderator'])->prefix('moderator')->name('moderator.')->group(function () {
-    Route::resource('objects', \App\Http\Controllers\ModeratorObjectController::class);
-});
+
 
 require __DIR__.'/auth.php';

@@ -45,13 +45,14 @@ class ModeratorObjectController extends Controller
     public function edit(ModeratorObject $moderatorObject)
     {
         return view('moderator.objects.edit', [
-            'object' => $moderatorObject,
+            'object' => $moderatorObject, // Передаем объект в шаблон
             'regions' => \App\Models\Region::all(),
             'cities' => \App\Models\City::all(),
             'buildingTypes' => \App\Models\BuildingType::all(),
             'streets' => \App\Models\Street::all(),
         ]);
     }
+
 
     public function update(Request $request, ModeratorObject $moderatorObject)
     {
@@ -71,11 +72,14 @@ class ModeratorObjectController extends Controller
 
         return redirect()->route('moderator.objects.index')->with('success', 'Объект обновлен.');
     }
-
     public function destroy(ModeratorObject $moderatorObject)
     {
-        $moderatorObject->delete();
-
-        return redirect()->route('moderator.objects.index')->with('success', 'Объект удален.');
+        try {
+            $moderatorObject->delete();
+            return redirect()->route('moderator.objects.index')->with('success', 'Объект удален.');
+        } catch (\Exception $e) {
+            return redirect()->route('moderator.objects.index')->with('error', 'Ошибка при удалении объекта: ' . $e->getMessage());
+        }
     }
+
 }
